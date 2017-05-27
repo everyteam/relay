@@ -1,11 +1,11 @@
 package relay
 
 import (
-	"encoding/base64"
+	"context"
+        "encoding/base64"
 	"encoding/json"
 	"fmt"
-	"github.com/graphql-go/graphql"
-	"golang.org/x/net/context"
+        "github.com/graphql-go/graphql"
 	"strings"
 )
 

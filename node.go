@@ -136,7 +136,7 @@ func GlobalIDField(typeName string, idFetcher GlobalIDFetcherFn) *graphql.Field 
 				for i := 0; i < elem.NumField(); i++ {
 					f := elem.Field(i)
 					if typeOfElem.Field(i).Name == "ID" {
-						id = fmt.Sprintf("%d", f.Interface())
+						id = fmt.Sprintf("%v", f.Interface())
 						break
 					}
 				}

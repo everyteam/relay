@@ -2,11 +2,12 @@ package relay
 
 import (
 	"context"
-        "encoding/base64"
-	"encoding/json"
+	"encoding/base64"
 	"fmt"
-        "github.com/graphql-go/graphql"
+	"reflect"
 	"strings"
+
+	"github.com/graphql-go/graphql"
 )
 
 type NodeDefinitions struct {
@@ -126,14 +127,17 @@ func GlobalIDField(typeName string, idFetcher GlobalIDFetcherFn) *graphql.Field 
 					return id, err
 				}
 			} else {
-				// try to get from p.Source (data)
-				var objMap interface{}
-				b, _ := json.Marshal(p.Source)
-				_ = json.Unmarshal(b, &objMap)
-				switch obj := objMap.(type) {
-				case map[string]interface{}:
-					if iid, ok := obj["id"]; ok {
-						id = fmt.Sprintf("%v", iid)
+				// try to get an ID string from p.Source
+				// via reflection on the ID field of the
+				// underlying concrete type
+
+				elem := reflect.ValueOf(p.Source).Elem()
+				typeOfElem := elem.Type()
+				for i := 0; i < elem.NumField(); i++ {
+					f := elem.Field(i)
+					if typeOfElem.Field(i).Name == "ID" {
+						id = fmt.Sprintf("%d", f.Interface())
+						break
 					}
 				}
 			}

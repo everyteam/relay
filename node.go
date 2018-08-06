@@ -137,10 +137,13 @@ func GlobalIDField(typeName string, idFetcher GlobalIDFetcherFn) *graphql.Field 
 					tf := typeOfElem.Field(i)
 					if tf.Tag.Get("json") == "id" {
 						id = fmt.Sprintf("%v", ef.Interface())
+						// We prefer the tagged field, so exit the loop
 						break
 					}
 					if tf.Name == "ID" {
 						id = fmt.Sprintf("%v", ef.Interface())
+						// We prefer the tagged field, so fall through
+						// in case a subsequent field is tagged
 					}
 				}
 			}

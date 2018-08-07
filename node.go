@@ -130,7 +130,10 @@ func GlobalIDField(typeName string, idFetcher GlobalIDFetcherFn) *graphql.Field 
 				// try to get an ID string from p.Source
 				// via reflection on the ID field of the
 				// underlying concrete type
-				elem := reflect.ValueOf(p.Source).Elem()
+				elem := reflect.ValueOf(p.Source)
+				if elem.Kind() == reflect.Ptr {
+					elem = elem.Elem()
+				}
 				typeOfElem := elem.Type()
 				for i := 0; i < elem.NumField(); i++ {
 					ef := elem.Field(i)
